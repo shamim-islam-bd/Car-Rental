@@ -12,8 +12,6 @@ router.post('/login', function (request, response, next) {
   var email = request.body.email;
   var password = request.body.password;
 
-  console.log("email from login --------- ", email, password);
-
   if (email && password) {
     query = `SELECT * FROM users WHERE email = "${email}"`;
 
@@ -45,13 +43,10 @@ router.post('/login', function (request, response, next) {
 
 });
 
-
 router.get('/logout', function (request, response, next) {
   request.session.destroy();
   response.redirect("/");
-
 });
-
 
 
 module.exports = router;
