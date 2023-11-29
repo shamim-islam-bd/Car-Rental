@@ -1,0 +1,3 @@
+C:\Users\LEGION\source\repos\Soc-NodeJS\Soc-NodeJS\obj\Debug\Soc-NodeJS.njsproj.AssemblyReference.cache
+C:\Users\LEGION\source\repos\Soc-NodeJS\Soc-NodeJS\obj\Debug\Soc-NodeJS.njsproj.CoreCompileInputs.cache
+C:\Users\LEGION\source\repos\Soc-NodeJS\Soc-NodeJS\bin\Microsoft.NodejsTools.WebRole.dll
