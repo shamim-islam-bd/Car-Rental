@@ -36,6 +36,18 @@ router.get('/cars', function (req, res, next) {
   }
 });
 
+
+// GET request for the register page
+router.get('/register', (req, res) => {
+  res.render('register'); // Assuming register.ejs is in your views folder
+});
+
+// GET request for the register page
+router.get('/login', (req, res) => {
+  res.render('login'); // Assuming register.ejs is in your views folder
+});
+
+
 router.post('/register', function (req, res, next) {
   var email = req.body.email;
   var password = req.body.password;
@@ -51,7 +63,7 @@ router.post('/register', function (req, res, next) {
           return;
         }
         console.log("User registered successfully");
-        res.redirect('/');
+        res.redirect('/login');
       });
   } else {
     res.status(400).send('Please enter Email Address, Password, Username, and Role!');
@@ -68,46 +80,43 @@ router.post('/login', function (request, response, next) {
 
     database.query(query, function (error, data) {
       if (data.length > 0) {
-        for (var count = 0; count < data.length; count++) {
-          if (data[count].password == password) {
-            request.session.user_id = data[count].user_id;
-
-            response.redirect("/dashboard");
-          }
-          else {
-            response.send('Incorrect Password');
-          }
+        if (data[0].password === password) {
+          var user = data[0];
+          request.session.user_id = user.id; // Store user ID in session
+          response.redirect("/dashboard");
+        } else {
+          response.send('Incorrect Password');
         }
-      }
-      else {
+      } else {
         response.send('Incorrect Email Address');
       }
-      response.end();
     });
-  }
-  else {
+  } else {
     response.send('Please Enter Email Address and Password Details');
-    response.end();
   }
-
 });
 
-
-router.get('/logout', function (request, response, next) {
-  request.session.destroy();
-  response.redirect("/");
-});
 
 
 router.get('/dashboard', function (request, response, next) {
   if (request.session.user_id) {
-    response.redirect("/dashboard");
+    response.render('dashboard'); // Render your dashboard.ejs page
+  } else {
+    response.redirect('/login'); // Redirect to the login page if not logged in
   }
-  else {
-    response.send('Please login to view this page!');
-  }
-  response.end();
 });
+
+
+
+router.get('/logout', function (req, res, next) {
+  req.session.destroy(function (err) {
+    if (err) {
+      console.error(err);
+    }
+    res.redirect('/login');
+  });
+});
+
 
 
 module.exports = router;

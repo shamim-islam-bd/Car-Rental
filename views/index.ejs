@@ -1,19 +1,42 @@
 <%- include('partials/header') %>
         <div class="container">
-            <h1 class="mt-5 mb-5 text-center text-primary"><b>CAR RENTAL SYSTEM</b></h1>
-           
-            <div class="container mt-4">
+            <h2 class="mt-2 mb-5 text-center text-primary"><b>OUR RENTAL CARS</b></h2>
+
+            <div class="container mt-2">
+                <!--- showing all cars using loop in frontend -->
                 <div class="row">
                     <% if (cars && cars.length > 0) { %>
                         <% cars.forEach(function(car, index) { %>
                             <div class="col-lg-4 col-md-6 mb-4">
                                 <div class="card h-100">
-                                    <img src="<%= car.car_img %>" class="card-img-top" alt="<%= car.car_name %>">
+                                    <!-- <img src="<%= car.car_img %>" class="card-img-top" alt="<%= car.car_name %>"> -->
                                     <div class="card-body">
                                         <h5 class="card-title"><%= car.car_name %></h5>
                                         <p class="card-text">Fuel Type: <%= car.fuel_type %></p>
                                         <p class="card-text">Capacity: <%= car.capacity %></p>
                                         <p class="card-text">Rental Price: <%= car.rental_price %></p>
+                                        <% if (!car.booking_time || car.booking_time === '0000-00-00') { %>
+                                            <p class="card-text">Booking Time: <span class="text-success">Open to Book </span></p>
+                                        <% } else { %>
+                                            <p class="card-text">Booking Time: <span class="text-danger">
+                                                 
+                                                <!---following Nov 02, 2023 this formate formating the date.  -->
+                                                 <script>
+                                                    function formatDate(dateString) {
+                                                        if (!dateString || dateString === '0000-00-00') {
+                                                            document.write('Available');
+                                                        } else {
+                                                            const date = new Date(dateString);
+                                                            const options = { month: 'short', day: '2-digit', year: 'numeric' };
+                                                            document.write(date.toLocaleDateString('en-US', options));
+                                                        }
+                                                    }
+                                                    formatDate('<%= car.booking_time %>');
+                                                </script>
+                                                
+                                                </span></p>
+                                        <% } %>
+                                        
                                         <p class="card-text">
                                             Availability: 
                                             <% if (car.available === 'Y') { %>
@@ -23,7 +46,7 @@
                                             <% } %>
                                         </p>
                                         <% if (car.available === 'Y') { %>
-                                            <button type="button" class="btn btn-success">Book</button>
+                                            <a link="/bookcars" class="btn btn-success text-white">Book</a>
                                         <% } else { %>
                                             <button type="button" class="btn btn-danger" disabled>Not Available</button>
                                         <% } %>
@@ -39,9 +62,6 @@
                     <% } %>
                 </div>
             </div>
-            
-            
-            
+
         </div>
 <%- include('partials/footer') %>
-
