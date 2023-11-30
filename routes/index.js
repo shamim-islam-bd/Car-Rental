@@ -2,16 +2,37 @@ var express = require('express');
 var router = express.Router();
 var database = require('../DBConnection.js');
 
-/*..GET home page..*/
+/* GET route that renders the index.ejs file */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express', session: req.session });
+  try {
+    var query = `SELECT * FROM cars`;
+
+    database.query(query, function (error, data) {
+      if (error) throw error;
+      // res.send(data);
+      res.render('index', { cars: data }); // Pass the fetched data to the 'index.ejs' template
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error occurred");
+  }
 });
 
-router.get('/dashboard', function (req, res, next) {
-  if (req.session.user_id) {
-    res.render('dashboard', { title: 'Dashboard', session: req.session });
-  } else {
-    res.redirect('/');
+/* GET route that renders the index.ejs file */
+router.get('/cars', function (req, res, next) {
+  try {
+    var query = `SELECT * FROM cars`;
+
+    database.query(query, function (error, data) {
+      if (error) throw error;
+      // res.send(data);
+      res.render('index', { cars: data }); // Pass the fetched data to the 'index.ejs' template
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error occurred");
   }
 });
 
@@ -22,17 +43,21 @@ router.post('/register', function (req, res, next) {
   var role = req.body.role;
 
   if (email && password && username && role) {
-    express.query('INSERT INTO users (email, password, username, role) VALUES (?, ?, ?, ?)',
+    database.query('INSERT INTO users (email, password, username, role) VALUES (?, ?, ?, ?)',
       [email, password, username, role], function (error, results, fields) {
-        console.log("username", results);
-        if (error) throw error;
-        response.redirect('/');
+        if (error) {
+          console.error("Error occurred during registration:", error);
+          res.status(500).send('Error occurred during registration');
+          return;
+        }
+        console.log("User registered successfully");
+        res.redirect('/');
       });
   } else {
-    response.send('Please enter Email Address, Password, Username and Role!');
-    response.end();
+    res.status(400).send('Please enter Email Address, Password, Username, and Role!');
   }
 });
+
 
 router.post('/login', function (request, response, next) {
   var email = request.body.email;
@@ -67,9 +92,21 @@ router.post('/login', function (request, response, next) {
 
 });
 
+
 router.get('/logout', function (request, response, next) {
   request.session.destroy();
   response.redirect("/");
+});
+
+
+router.get('/dashboard', function (request, response, next) {
+  if (request.session.user_id) {
+    response.redirect("/dashboard");
+  }
+  else {
+    response.send('Please login to view this page!');
+  }
+  response.end();
 });
 
 

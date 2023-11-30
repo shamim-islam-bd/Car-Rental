@@ -2,25 +2,6 @@ var express = require('express');
 var router = express.Router();
 var database = require('../DBConnection.js');
 
-
-/* GET route that renders the index.ejs file */
-router.get('/all', function (req, res, next) {
-    try {
-        var query = `SELECT * FROM cars`;
-
-        database.query(query, function (error, data) {
-            if (error) throw error;
-            // res.send(data);
-            res.render('index', { cars: data, session: req.session }); // Pass the fetched data to the 'index.ejs' template
-        });
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("Error occurred");
-    }
-});
-
-
 /* POST route that renders the addnewcars.ejs file */
 router.post('/addnewcars', function (req, res, next) {
     try {
@@ -51,9 +32,6 @@ router.post('/addnewcars', function (req, res, next) {
         res.status(500).send("Error occurred");
     }
 });
-
-
-
 
 
 module.exports = router;
